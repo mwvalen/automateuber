@@ -39,18 +39,14 @@ const puppeteer = require('puppeteer');
     await locationButton.click(),
     page.waitForNavigation({waitUntil:'networkidle2'})
     ]);
-  await page.waitForTimeout(3000);
-  const newPagePromise = new Promise(x => browser.once('targetcreated', target => x(target.page())));	
-await page.click('#abtn');	
-const popup = await newPagePromise;
-console.log(popup.url());
+  await page.waitForTimeout(1000);
   const changelocation = await page.waitForSelector('a[class="bc cd ce cf cg ch ca cb cc ag i9 cj ka bf ba g5 d1"]', {
   visible: true,
   });                                  //  --> <<Change Location Button>>
   await Promise.all([
     await changelocation.click(),
     page.waitForNavigation({waitUntil:'networkidle2'})
-    ]);
+    ]); //
 
 
 
