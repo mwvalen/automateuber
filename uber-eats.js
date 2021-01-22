@@ -2,7 +2,7 @@ const puppeteer = require('puppeteer');
 
 (async () => {
 
-  const browser = await puppeteer.launch({ headless: false });  // --> <<Browser>>
+  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-fullscreen'] });  // --> <<Browser>>
   const page = await browser.newPage();  // --> <<Page>>
   await page.goto('https://www.ubereats.com/');
   const button = await page.waitForSelector('a[data-test="header-sign-in"]', {
@@ -49,3 +49,5 @@ const puppeteer = require('puppeteer');
     page.waitForNavigation({waitUntil:'networkidle2'})
     ]); //
 })();
+
+
