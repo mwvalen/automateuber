@@ -40,9 +40,10 @@ const puppeteer = require('puppeteer');
     page.waitForNavigation({waitUntil:'networkidle2'})
     ]);
   await page.waitForTimeout(1000);
-  const changelocation = await page.waitForSelector('a[class="bc cd ce cf cg ch ca cb cc ag i9 cj ka bf ba g5 d1"]', {
+  const changelocation = await page.waitForSelector('a[class="bc cd ce cf cg ch ca cb cc ag io cj ka bf ba g5 d1"]', {
   visible: true,
-  });                                  //  --> <<Change Location Button>>
+  });
+  console.l                                  //  --> <<Change Location Button>>
   await Promise.all([
     await changelocation.click(),
     page.waitForNavigation({waitUntil:'networkidle2'})
