@@ -47,8 +47,4 @@ const puppeteer = require('puppeteer');
     await changelocation.click(),
     page.waitForNavigation({waitUntil:'networkidle2'})
     ]); //
-
-
-
-
 })();
