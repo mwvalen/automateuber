@@ -29,25 +29,25 @@ const puppeteer = require('puppeteer');
     visible: true,
   });                                   // --> <<Password Button>>
   await Promise.all([
-    await passwordButton.click(),
+    passwordButton.click(),
     page.waitForNavigation({waitUntil:'networkidle2'})
     ]);
   const locationButton = await page.waitForSelector('a[class="ca cb cc bc cd ce cf cg ch ag be bf bj ci cj ck ba"]', {
     visible: true,
   });                                    //  --> <<Location Button>>
+  await locationButton.click();    
+  const changelocation = await page.waitForSelector('a[class="bc cd ce cf cg ch ca cb cc ag io cj ka bf ba g5 d1"]');                                 //  --> <<Change Location Button>>
   await Promise.all([
-    await locationButton.click(),
-    page.waitForNavigation({waitUntil:'networkidle2'})
-    ]);
-  await page.waitForTimeout(1000);
-  const changelocation = await page.waitForSelector('a[class="bc cd ce cf cg ch ca cb cc ag io cj ka bf ba g5 d1"]', {
-  visible: true,
-  });
-  console.l                                  //  --> <<Change Location Button>>
-  await Promise.all([
-    await changelocation.click(),
-    page.waitForNavigation({waitUntil:'networkidle2'})
-    ]); //
+    changelocation.click()
+    ]); 
+  const location = await page.waitForSelector('input[name="searchTerm"]', {
+    visible: true,
+    timeout: 3000
+  });      // -->  <<Location>>
+
+  console.log("hello",location);
+  await location.focus();
+  await location.type("CNT");
 })();
 
 
