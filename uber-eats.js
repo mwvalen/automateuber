@@ -72,14 +72,31 @@ const windowSize = `--window-size=${windowWidth},${windowHeight}`;
     const element = elements.find(element => element.innerHTML.toLowerCase().includes('pizza pizza'));
     element.click();
   })
+  await page.waitForTimeout(3000);
+  console.log('page 1', page)
+  await page.evaluate(() => {
+    const elements = [...document.querySelectorAll('button')];
+    const element = elements.find(element => element.innerHTML.toLowerCase().includes('signature pizzas'));
+    element.click();
+  })
+  console.log('mwv -1')
+  await page.waitForTimeout(3000);
+  console.log('mwv -2')
+  console.log('page', page)
+  await page.evaluate(() => {
+    console.log('mwv 0')
+    const elements = [...document.querySelectorAll('h2')];
+    console.log('mwv 1')
+    const element = elements.find(element => element.innerHTML.toLowerCase().includes('signature pizzas'));
+    console.log('mwv 2')
+    const signaturePizzasUl = element.nextSibling;
+    console.log('mwv 3')
+    const signaturePizzasLis = signaturePizzasUl.children;
+    console.log('mwv 4')
+    console.log('signature pizza lis', signaturePizzasLis);
+    // element.click();
+  })
 
-  
-
-  // const topChoice = await page.waitForSelector('#main-content > div > div > div.ba.c9.bn.ev.dz.e0.e1.e2 > div > div.fu.je.fw.fx.fy.fz > div:nth-child(2) > div > figure > a'); // --> <<Top choice>>
-  // await Promise.all([
-  //   topChoice.click(),
-  //   page.waitForNavigation({waitUntil:'networkidle2'})
-  //   ]);
   // const signaturePizzas = await page.waitForSelector('#main-content > div.b7.b8.b9.ba.bb > div:nth-child(2) > div > div > div > div > nav > div:nth-child(6) > button');  // --> <<Signature Pizzas>>
   // signaturePizzas.click();
   // await page.waitForTimeout(1000);
