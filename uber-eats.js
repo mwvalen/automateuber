@@ -1,8 +1,20 @@
 const puppeteer = require('puppeteer');
 
+const fullscreen = false;
+
+const windowWidth=1400;
+const windowHeight=1080;
+
+const windowSize = `--window-size=${windowWidth},${windowHeight}`;
+
+
 (async () => {
 
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ['--start-fullscreen'] });  // --> <<Browser>>
+  let launchArgs = ''
+  launchArgs += windowSize
+  if (fullscreen) launchArgs += '--start-fullscreen'
+
+  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: [launchArgs] });  // --> <<Browser>>
   const page = await browser.newPage();  // --> <<Page>>
   await page.goto('https://www.ubereats.com/');
   const button = await page.waitForSelector('a[data-test="header-sign-in"]', {
@@ -52,25 +64,15 @@ const puppeteer = require('puppeteer');
   await searchBar.type("Pizza pizza");
   await Promise.all([
     page.keyboard.press('Enter'),
-    page.waitForNavigation({waitUntil:'networkidle2'})
-    ]);
-  // const pizzaPizza = await page.$x("//p[contains(., 'Pizza Pizza (Blue Jays & Front)')]");
-  // const pizzaPizza = page.$eval('p', (element) => {
-  //   return 'element'.innerHTML
-  // });
-  // console.log("hello",pizzaPizza);
-  // await pizzaPizza.click();
-  // const innerText = await page.evaluate(() => document.querySelector('p').innerText);
-  //const pizzaPizza = await page.$x("//p[text()='King Taps']");
-  //const pizzaPizza = await page.$eval('Pizza Pizza (Blue Jays &amp; Front)', element => element.innerHTML);
+    page.waitForNavigation({ waitUntil: 'networkidle2' }),
+  ]);
+  await page.waitForTimeout(3000);
   await page.evaluate(() => {
     const elements = [...document.querySelectorAll('p')];
-    console.log("elements",elements);
-    const element = elements.find(element => element.innerHTML === '<p>Pizza Pizza (Blue Jays &amp; Front)</p>');
+    const element = elements.find(element => element.innerHTML.toLowerCase().includes('pizza pizza'));
     element.click();
-  });
-  console.log("hello",element);
-  
+  })
+
   
 
   // const topChoice = await page.waitForSelector('#main-content > div > div > div.ba.c9.bn.ev.dz.e0.e1.e2 > div > div.fu.je.fw.fx.fy.fz > div:nth-child(2) > div > figure > a'); // --> <<Top choice>>
