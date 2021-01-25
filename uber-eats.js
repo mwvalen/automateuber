@@ -77,43 +77,44 @@ async function orderPizza ({ restaurant, size, tip }, page) {
     page.waitForNavigation({ waitUntil: 'networkidle2' }),
   ]);
   await page.waitForTimeout(3000);
-  await page.evaluate(() => {
+  await page.evaluate((restaurant) => {
     const elements = [...document.querySelectorAll('p')];
     const element = elements.find(element => element.innerHTML.toLowerCase().includes(restaurant));
     element.click();
+  },restaurant);
+  await page.waitForTimeout(3000);
+  await page.evaluate(() => {
+    const elements = [...document.querySelectorAll('button')];
+    const element = elements.find(element => element.innerHTML.toLowerCase().includes('signature'));
+    element.click();
   });
   await page.waitForTimeout(3000);
-  await page.evaluate(async () => {
-    const elements = [...document.querySelectorAll('button')];
-    const element = elements.find(element => element.innerHTML.toLowerCase().includes('signature pizzas'));
-  });
-  await page.waitForTimeout(1000);
   const pizzaChoice = await page.waitForSelector(selectors.thirdChoice);  // --> <<Third Choice>>
   pizzaChoice.click();
   await page.waitForTimeout(3000);
-  await page.evaluate(() => {
-    const elements = [...document.querySelectorAll('div.ca.cb.cc')];
+  await page.evaluate((size) => {
+    const elements = [...document.querySelectorAll('label')];
     const element = elements.find(element => element.innerHTML.toLowerCase().includes(size));
     element.click();
-  });
+  },size);
   await page.waitForTimeout(3000);
   await page.evaluate(() => {
-    const elements = [...document.querySelectorAll('div.cu.an')];
+    const elements = [...document.querySelectorAll('button')];
     const element = elements.find(element => element.innerHTML.toLowerCase().includes('to order'));
     element.click();
   });
-  await page.waitForTimeout(5000);
+  await page.waitForTimeout(4000);
   await page.evaluate(() => {
-    const elements = [...document.querySelectorAll('a.ag.e4.bf.lp.cw')];
+    const elements = [...document.querySelectorAll('a[rel="nofollow"]')];
     const element = elements.find(element => element.innerHTML.toLowerCase().includes('checkout'));
     element.click();
   });
   await page.waitForTimeout(3000);
-  await page.evaluate(() => {
-    const elements = [...document.querySelectorAll('div.cv.cp.cc.l9.ba')];
+  await page.evaluate((tip) => {
+    const elements = [...document.querySelectorAll('div[role="radio"]')];
     const element = elements.find(element => element.innerHTML.toLowerCase().includes(tip));
     element.click();
-  });
+  },tip);
 }
 
   // const locationButton = await page.waitForSelector('a[class="ca cb cc bc cd ce cf cg ch ag be bf bj ci cj ck ba"]', {
