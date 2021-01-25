@@ -121,7 +121,7 @@ const windowSize = `--window-size=${windowWidth},${windowHeight}`;
     const element = elements.find(element => element.innerHTML.toLowerCase().includes('to order'));
     element.click();
   });
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(5000);
   await page.evaluate(() => {
     const elements = [...document.querySelectorAll('a.ag.e4.bf.lp.cw')];
     const element = elements.find(element => element.innerHTML.toLowerCase().includes('checkout'));
