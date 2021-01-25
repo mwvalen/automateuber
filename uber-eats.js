@@ -1,63 +1,31 @@
 const puppeteer = require('puppeteer');
 
-const fullscreen = false;
+const launchSettings = {
+  fullscreen: false,
+  windowWidth: 1400,
+  windowHeight: 1000
+}
 
-const windowWidth=1400;
-const windowHeight=1080;
+const userCredentials = {
+  username: "dev.michael.valentine@gmail.com",
+  password: "A.a.12345"
+}
 
-const windowSize = `--window-size=${windowWidth},${windowHeight}`;
+const selectors = {
+  signInButton: 'a[data-test="header-sign-in"]',
+  usernameSelector: 'input[name="textInputValue"]',
+  usernameNextButtonSelector: 'button[class="btn btn--arrow btn--full"]',
+  passwordSelector: 'input[name="password"]',
+  submitPasswordButton: 'button[class="btn btn--arrow btn--full push--top"]'
+}
 
+launchSettings['windowSize'] = `--window-size=${launchSettings.windowWidth},${launchSettings.windowHeight}`;
 
 (async () => {
+  const page = await openAndNavigateTo('https://www.ubereats.com/', launchSettings);
+  await logIn(userCredentials, page);
+  
 
-  let launchArgs = ''
-  launchArgs += windowSize
-  if (fullscreen) launchArgs += '--start-fullscreen'
-
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: [launchArgs] });  // --> <<Browser>>
-  const page = await browser.newPage();  // --> <<Page>>
-  await page.goto('https://www.ubereats.com/');
-  const button = await page.waitForSelector('a[data-test="header-sign-in"]', {
-    visible: true,
-  });                                       // --> <<Button>>
-  await Promise.all([
-    await button.click(),
-    page.waitForNavigation({waitUntil:'networkidle2'})
-    ]);
-  const username = await page.waitForSelector('input[name="textInputValue"]');    // --> <<Username>>
-  await username.type("dev.michael.valentine@gmail.com");
-  await page.waitForTimeout(1000);
-  const nextButton = await page.waitForSelector('button[class="btn btn--arrow btn--full"]', {
-    visible: true,
-  });                                                                 // -->  <<Username Button>>
-  await Promise.all([
-    await nextButton.click(),
-    page.waitForNavigation({waitUntil:'networkidle2'})
-    ]);
-  const password = await page.waitForSelector('input[name="password"]');     // -->  <<Password>>
-  await password.type("A.a.12345");
-  await page.waitForTimeout(1000);
-  const passwordButton = await page.waitForSelector('button[class="btn btn--arrow btn--full push--top"]', {
-    visible: true,
-  });                                   // --> <<Password Button>>
-  await Promise.all([
-    passwordButton.click(),
-    page.waitForNavigation({waitUntil:'networkidle2'})
-    ]);
-  // const locationButton = await page.waitForSelector('a[class="ca cb cc bc cd ce cf cg ch ag be bf bj ci cj ck ba"]', {
-  //   visible: true,
-  // });                                    //  --> <<Location Button>>
-  // await locationButton.click();    
-  // const changelocation = await page.waitForSelector('a[class="bc cd ce cf cg ch ca cb cc ag io cj ka bf ba g5 d1"]');                                 //  --> <<Change Location Button>>
-  // await Promise.all([
-  //   changelocation.click()
-  //   ]); 
-  // await page.waitForTimeout(3000);
-  // const location = await page.waitForSelector('input[name="searchTerm"]');      // -->  <<Location>>
-
-  // // //console.log("hello",location);
-  // //await location.click();
-  // await location.keyboard.type("CN Tower");
   const searchBar = await page.waitForSelector('#search-suggestions-typeahead-input');  // --> <<Search Bar>>
   await searchBar.type("Pizza pizza");
   await Promise.all([
@@ -71,24 +39,9 @@ const windowSize = `--window-size=${windowWidth},${windowHeight}`;
     element.click();
   });
   await page.waitForTimeout(3000);
-  await page.evaluate(() => {
+  await page.evaluate(async () => {
     const elements = [...document.querySelectorAll('button')];
     const element = elements.find(element => element.innerHTML.toLowerCase().includes('signature pizzas'));
-    if (element === undefined) {
-      page.evaluate(() => {
-        const elements = [...document.querySelectorAll('button')];
-        const element = elements.find(element => element.innerHTML.toLowerCase().includes('more'));
-        element.click();
-      });
-      page.waitForTimeout(2000);
-      page.evaluate(() => {
-        const elements = [...document.querySelectorAll('div.f6.nd.ba.lk.lj.ne')];
-        const element = elements.find(element => element.innerHTML.toLowerCase().includes('signature pizzas'));
-        element.click();
-      });      
-      } else {
-      element.click();
-      };
   });
 
   // await page.waitForTimeout(3000);
@@ -136,3 +89,51 @@ const windowSize = `--window-size=${windowWidth},${windowHeight}`;
 
 })();
 
+async function openAndNavigateTo (url, settings) {
+  let launchArgs = '';
+  launchArgs += settings.windowSize;  // --> 
+  if (settings.fullscreen) launchArgs += '--start-fullscreen';
+  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: [launchArgs] });  // --> <<Browser>>
+  const page = await browser.newPage();  // --> <<Page>>
+  await page.goto(url);
+  return page;
+};
+
+async function logIn ({ username, password }, page) {
+  const button = await page.waitForSelector(selectors.signInButton);
+  await Promise.all([
+    button.click(),
+    page.waitForNavigation({ waitUntil:'networkidle2' })
+  ]);
+  const usernameInput = await page.waitForSelector(selectors.usernameSelector);    // --> <<Username>>
+  await usernameInput.type(username);
+  await page.waitForTimeout(1000);
+  const nextButton = await page.waitForSelector(selectors.usernameNextButtonSelector);                                                                 // -->  <<Username Button>>
+  await Promise.all([
+    await nextButton.click(),
+    page.waitForNavigation({waitUntil:'networkidle2'})
+  ]);
+  const passwordInput = await page.waitForSelector(selectors.passwordSelector);     // -->  <<Password>>
+  await passwordInput.type(password);
+  await page.waitForTimeout(1000);
+  const passwordButton = await page.waitForSelector(selectors.submitPasswordButton);                                   // --> <<Password Button>>
+  await Promise.all([
+    passwordButton.click(),
+    page.waitForNavigation({waitUntil:'networkidle2'})
+  ]);
+}
+
+  // const locationButton = await page.waitForSelector('a[class="ca cb cc bc cd ce cf cg ch ag be bf bj ci cj ck ba"]', {
+  //   visible: true,
+  // });                                    //  --> <<Location Button>>
+  // await locationButton.click();    
+  // const changelocation = await page.waitForSelector('a[class="bc cd ce cf cg ch ca cb cc ag io cj ka bf ba g5 d1"]');                                 //  --> <<Change Location Button>>
+  // await Promise.all([
+  //   changelocation.click()
+  //   ]); 
+  // await page.waitForTimeout(3000);
+  // const location = await page.waitForSelector('input[name="searchTerm"]');      // -->  <<Location>>
+
+  // // //console.log("hello",location);
+  // //await location.click();
+  // await location.keyboard.type("CN Tower");
