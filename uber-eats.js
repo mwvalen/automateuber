@@ -23,7 +23,8 @@ const selectors = {
   usernameNextButtonSelector: 'button[class="btn btn--arrow btn--full"]',
   passwordSelector: 'input[name="password"]',
   submitPasswordButton: 'button[class="btn btn--arrow btn--full push--top"]',
-  foodSearchBar: '#search-suggestions-typeahead-input'
+  foodSearchBar: '#search-suggestions-typeahead-input',
+  thirdChoice: '#main-content > div.b7.b8.b9.ba.bb > ul > li:nth-child(6) > ul > li:nth-child(3) > div > div > div > div.ag.cu.ah.cw > div.c9 > h4 > div'
 }
 
 launchSettings['windowSize'] = `--window-size=${launchSettings.windowWidth},${launchSettings.windowHeight}`;
@@ -87,8 +88,8 @@ async function orderPizza ({ restaurant, size, tip }, page) {
     const element = elements.find(element => element.innerHTML.toLowerCase().includes('signature pizzas'));
   });
   await page.waitForTimeout(1000);
-  const thirdChoice = await page.waitForSelector('#main-content > div.b7.b8.b9.ba.bb > ul > li:nth-child(6) > ul > li:nth-child(3) > div > div > div > div.ag.cu.ah.cw > div.c9 > h4 > div');  // --> <<Third Choice>>
-  thirdChoice.click();
+  const pizzaChoice = await page.waitForSelector(selectors.thirdChoice);  // --> <<Third Choice>>
+  pizzaChoice.click();
   await page.waitForTimeout(3000);
   await page.evaluate(() => {
     const elements = [...document.querySelectorAll('div.ca.cb.cc')];
