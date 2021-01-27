@@ -107,6 +107,7 @@ async function orderPizza ({ restaurant, size, tip }, page) {
 
     await page.waitForTimeout(1000);
     element = await getElementByInnerHtml('div[role="radio"]', tip, page) // --> <<Tip>>
+    await page.evalute(e => e.click(), element);
   } catch (e) {
     console.error(e);
   }
@@ -120,7 +121,6 @@ async function getElementByInnerHtml (selector, value, page) {
       let element = null; 
       let waitTime = 0;
       while (!element && waitTime < 10000) {
-        console.log(`loop ${waitTime / 500}`);
         await new Promise(res => setTimeout(res, 500));
         waitTime += 500
         const elements = [...document.querySelectorAll(selector)];
