@@ -9,8 +9,8 @@ const launchSettings = {
 }
 
 const userCredentials = {
-  username: "dev.michael.valentine@gmail.com",
-  password: "A.a.12345"
+  username: "",
+  password: ""
 }
 
 const orderDetails = {

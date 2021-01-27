@@ -7,8 +7,8 @@ const launchSettings = {
 }
 
 const communication = {
-  receipentName: "Anton Fisher",
-  messageText: "testing"
+  receipentName: "",
+  messageText: ""
 }
 const selectors = {
   newMessageButton: 'div[title="New chat"]',
